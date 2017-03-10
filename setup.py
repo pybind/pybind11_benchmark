@@ -2,9 +2,10 @@ from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 import sys
 import setuptools
+from distutils import sysconfig
+import platform
 
 __version__ = '0.0.1'
-
 
 class get_pybind_include(object):
     """Helper class to determine the pybind11 include path
@@ -23,7 +24,7 @@ class get_pybind_include(object):
 
 ext_modules = [
     Extension(
-        'python_example',
+        'pybind11_benchmark',
         ['src/main.cpp'],
         include_dirs=[
             # Path to pybind11 headers
@@ -83,6 +84,8 @@ class BuildExt(build_ext):
             opts.append(cpp_flag(self.compiler))
             if has_flag(self.compiler, '-fvisibility=hidden'):
                 opts.append('-fvisibility=hidden')
+            opts.append('-g0')
+            opts.append('-O3')
         elif ct == 'msvc':
             opts.append('/DVERSION_INFO=\\"%s\\"' % self.distribution.get_version())
         for ext in self.extensions:
@@ -90,12 +93,12 @@ class BuildExt(build_ext):
         build_ext.build_extensions(self)
 
 setup(
-    name='python_example',
+    name='pybind11_benchmark',
     version=__version__,
-    author='Sylvain Corlay',
-    author_email='sylvain.corlay@gmail.com',
-    url='https://github.com/pybind/python_example',
-    description='A test project using pybind11',
+    author='Wenzel Jakob',
+    author_email='wenzel.jakob@epfl.ch',
+    url='https://github.com/pybind/pybind11_benchmark',
+    description='A benchmark for pybind11',
     long_description='',
     ext_modules=ext_modules,
     install_requires=['pybind11>=1.7'],
